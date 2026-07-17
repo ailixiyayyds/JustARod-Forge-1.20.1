@@ -1,136 +1,89 @@
 plugins {
+    id 'net.minecraftforge.gradle' version '[6.0.24,6.2)'
+    id 'org.jetbrains.kotlin.jvm' version '1.9.24'
     id 'maven-publish'
-    id "fabric-loom" version "1.7-SNAPSHOT"
-    id 'org.jetbrains.kotlin.jvm'
 }
 
 version = project.mod_version
 group = project.maven_group
 
 base {
-    archivesName = project.archives_base_name
+    archivesName = 'justarod-forge'
+}
+
+minecraft {
+    mappings channel: 'official', version: project.minecraft_version
+    copyIdeResources = true
 }
 
 repositories {
+    flatDir {
+        dirs '../toNeko-Forge-1.20.1/forge/libs'
+    }
     mavenCentral()
-    maven { name = "Modrinth"; url = "https://api.modrinth.com/maven" }
-    // Add repositories to retrieve artifacts from in here.
-    // You should only use this when depending on other mods because
-    // Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
-    // See https://docs.gradle.org/current/userguide/declaring_repositories.html
-    // for more information about repositories.
-    maven { name = "TerraformersMC"; url = "https://maven.terraformersmc.com/releases/" }
-
+    maven { url = 'https://maven.architectury.dev/' }
     maven {
         name = 'GeckoLib'
-        url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
-        content {
-            includeGroup("software.bernie.geckolib")
-            includeGroup("com.eliotlash.mclib")
-        }
+        url = 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
     }
-
-    maven { url = 'https://oss.sonatype.org/content/groups/public/' }
 }
+
+def toNekoForgeJar = file('../toNeko-Forge-1.20.1/forge/build/libs/toneko-forge-1.9.0+1.20.1-forge.0.jar')
 
 dependencies {
-    // To change the versions see the gradle.properties file
-    minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    minecraft "net.minecraftforge:forge:${project.minecraft_version}-${project.forge_version}"
 
+    // Transitional API bridge: this is Forgified Fabric API running on Forge,
+    // never Connector. Calls will be replaced with Forge APIs incrementally.
+    implementation fg.deobf('local.ffapi:fabric-api:0.92.6+1.11.14+1.20.1')
+    implementation files(fileTree(dir: '../toNeko-Forge-1.20.1/forge/ffapi-compile', include: '*.jar'))
+    implementation fg.deobf('local.geckolib:geckolib-forge-1.20.1:4.4.9')
 
-    // Fabric API. This is technically optional, but you probably want it anyway.
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-    // kotlin
-    modImplementation "net.fabricmc:fabric-language-kotlin:1.10.20+kotlin.1.9.24"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1"
-    // lombok
-    implementation "org.projectlombok:lombok:1.18.30"
+    compileOnly 'org.projectlombok:lombok:1.18.30'
 
-    def localToNekoJar = file("../toNeko/fabric/build/libs/${project.toneko_jar}")
-    if (!localToNekoJar.exists()) {
-        throw new GradleException("Missing the Minecraft 1.20.1 toNeko backport at ${localToNekoJar}. Build the sibling toNeko repository first.")
+    if (toNekoForgeJar.exists()) {
+        implementation fg.deobf(files(toNekoForgeJar))
+    } else {
+        logger.warn('toNeko Forge JAR is not available yet; JustARod compilation is intentionally deferred until the shared native API is built.')
     }
-    modImplementation files(localToNekoJar)
-    modImplementation "maven.modrinth:ctlibmod:0.1.13"
-
-    modImplementation "software.bernie.geckolib:geckolib-fabric-${minecraft_version}:${geckolib_version}"
-
-    modCompileOnly "me.lucko:fabric-permissions-api:0.3.1"
-
-    include modApi('teamreborn:energy:3.0.0') {
-        exclude(group: "net.fabricmc.fabric-api")
-    }
-
 }
 
-loom {
-    accessWidenerPath = file("src/main/resources/justarod.accessWideners.accessWidener")
-}
-
-fabricApi {
-    configureDataGeneration()
+sourceSets.main.resources {
+    exclude 'fabric.mod.json'
+    exclude 'justarod.accessWideners.accessWidener'
 }
 
 processResources {
-    inputs.property "version", project.version
-    inputs.property "minecraft_version", project.minecraft_version
-    inputs.property "loader_version", project.loader_version
-    filteringCharset "UTF-8"
-
-    filesMatching("fabric.mod.json") {
-        expand "version": project.version,
-                "minecraft_version": project.minecraft_version,
-                "loader_version": project.loader_version
-    }
-}
-
-def targetJavaVersion = 17
-tasks.withType(JavaCompile).configureEach {
-    // ensure that the encoding is set to UTF-8, no matter what the system default is
-    // this fixes some edge cases with special characters not displaying correctly
-    // see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
-    // If Javadoc is generated, this must be specified in that task too.
-    it.options.encoding = "UTF-8"
-    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
-        it.options.release.set(targetJavaVersion)
+    inputs.property 'version', project.version
+    filesMatching('META-INF/mods.toml') {
+        expand version: project.version
     }
 }
 
 java {
-    def javaVersion = JavaVersion.toVersion(targetJavaVersion)
-    if (JavaVersion.current() < javaVersion) {
-        toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
-    }
-    // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-    // if it is present.
-    // If you remove this line, sources will not be generated.
+    toolchain.languageVersion = JavaLanguageVersion.of(17)
     withSourcesJar()
 }
 
+tasks.withType(JavaCompile).configureEach {
+    options.release = 17
+    options.encoding = 'UTF-8'
+}
+
+kotlin {
+    jvmToolchain(17)
+}
+
 jar {
-    from("LICENSE") {
-        rename { "${it}_${project.archivesBaseName}" }
+    manifest {
+        attributes([
+                'Specification-Title' : 'justarod',
+                'Specification-Vendor': 'CSneko',
+                'Specification-Version': '1',
+                'Implementation-Title' : project.name,
+                'Implementation-Version': project.version
+        ])
     }
 }
-
-// configure the maven publication
-publishing {
-    publications {
-        create("mavenJava", MavenPublication) {
-            artifactId = project.archives_base_name
-            from components.java
-        }
-    }
-
-    // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
-    repositories {
-        // Add repositories to publish to here.
-        // Notice: This block does NOT have the same function as the block in the top level.
-        // The repositories here will be used for publishing your artifact, not for
-        // retrieving dependencies.
-    }
-}
-kotlin { jvmToolchain(17) }

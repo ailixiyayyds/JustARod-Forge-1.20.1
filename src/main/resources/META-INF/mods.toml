@@ -1,0 +1,33 @@
+modLoader="javafml"
+loaderVersion="[47,)"
+license="GPL-3.0-only"
+
+[[mods]]
+modId="justarod"
+version="${version}"
+displayName="JustARod"
+authors="CrystalNeko, IgnoreLicensesCN, cleep5564, LingyiBit0"
+description='''
+Native Forge 1.20.1 backport of JustARod.
+'''
+
+[[dependencies.justarod]]
+modId="forge"
+mandatory=true
+versionRange="[47.4.21,)"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.justarod]]
+modId="minecraft"
+mandatory=true
+versionRange="[1.20.1,1.20.2)"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.justarod]]
+modId="toneko"
+mandatory=true
+versionRange="[1.9.0,)"
+ordering="AFTER"
+side="BOTH"
