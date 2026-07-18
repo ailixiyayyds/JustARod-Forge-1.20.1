@@ -31,3 +31,17 @@ mandatory=true
 versionRange="[1.9.0,)"
 ordering="AFTER"
 side="BOTH"
+
+[[dependencies.justarod]]
+modId="fabric_api"
+mandatory=true
+versionRange="[0.92.6,)"
+ordering="BEFORE"
+side="BOTH"
+
+[[dependencies.justarod]]
+modId="geckolib"
+mandatory=true
+versionRange="[4.4.9,)"
+ordering="BEFORE"
+side="BOTH"

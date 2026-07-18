@@ -1,0 +1,56 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm'
+}
+
+architectury {
+    common rootProject.enabled_platforms.split(',')
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir rootProject.file('src/main/java')
+            exclude 'org/cneko/justarod/forge/**'
+        }
+        resources {
+            srcDir rootProject.file('src/main/resources')
+            exclude 'META-INF/mods.toml'
+        }
+    }
+}
+
+loom {
+    accessWidenerPath = project(':').file('src/main/resources/justarod.accessWideners.accessWidener')
+}
+
+def toNekoFabricJar = rootProject.file(
+        '../toNeko/fabric/build/libs/toneko-fabric-1.9.0+1.20.1-backport.1.jar')
+
+dependencies {
+    modImplementation "net.fabricmc:fabric-loader:${rootProject.loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_version}"
+    modImplementation "net.fabricmc:fabric-language-kotlin:1.10.20+kotlin.1.9.24"
+
+    if (!toNekoFabricJar.exists()) {
+        throw new GradleException("Missing Fabric compile bridge: ${toNekoFabricJar}")
+    }
+    modImplementation files(toNekoFabricJar)
+    modImplementation "software.bernie.geckolib:geckolib-fabric-${rootProject.minecraft_version}:${rootProject.geckolib_version}"
+    modCompileOnly('me.lucko:fabric-permissions-api:0.3.1') { transitive = false }
+    modApi('teamreborn:energy:3.0.0') {
+        exclude group: 'net.fabricmc.fabric-api'
+    }
+
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.24'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.8.1'
+    compileOnly 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'
+}
+
+kotlin {
+    jvmToolchain(17)
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+    kotlinOptions.jvmTarget = '17'
+}

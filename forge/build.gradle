@@ -1,0 +1,94 @@
+plugins {
+    id 'com.github.johnrengelman.shadow'
+}
+
+architectury {
+    platformSetupLoomIde()
+    forge()
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir rootProject.file('src/main/java')
+            include 'org/cneko/justarod/forge/**'
+        }
+        resources {
+            srcDir rootProject.file('src/main/resources')
+            include 'META-INF/mods.toml'
+            include 'META-INF/accesstransformer.cfg'
+        }
+    }
+}
+
+loom {
+    forge {
+        mixinConfig 'justarod.mixins.json'
+    }
+}
+
+configurations {
+    common {
+        canBeResolved = true
+        canBeConsumed = false
+    }
+    compileClasspath.extendsFrom common
+    runtimeClasspath.extendsFrom common
+    developmentForge.extendsFrom common
+
+    shadowBundle {
+        canBeResolved = true
+        canBeConsumed = false
+    }
+}
+
+def toNekoForgeRoot = rootProject.file('../toNeko-Forge-1.20.1-publish/forge')
+def toNekoForgeJar = new File(toNekoForgeRoot,
+        'build/libs/toneko-forge-1.9.0+1.20.1-forge.0.jar')
+def ffapiForgeJar = new File(toNekoForgeRoot,
+        'libs/fabric-api-0.92.6+1.11.14+1.20.1.jar')
+def geckoLibForgeJar = new File(toNekoForgeRoot,
+        'libs/geckolib-forge-1.20.1-4.4.9.jar')
+
+dependencies {
+    forge "net.minecraftforge:forge:${rootProject.minecraft_version}-${rootProject.forge_version}"
+    // The Forgified Fabric API runtime embeds Sinytra's loader shim. This
+    // compile-only API lets the Forge bootstrap invoke the legacy entrypoints.
+    compileOnly "net.fabricmc:fabric-loader:${rootProject.loader_version}"
+
+    common(project(path: ':common', configuration: 'namedElements')) { transitive false }
+    shadowBundle project(path: ':common', configuration: 'transformProductionForge')
+
+    // These are already Forge/Mojmap artifacts. Keep them out of Loom's mod
+    // remapper; they are external runtime requirements in the player's mods folder.
+    forgeRuntimeLibrary files(toNekoForgeJar)
+    forgeRuntimeLibrary files(ffapiForgeJar)
+    forgeRuntimeLibrary files(geckoLibForgeJar)
+
+    // JustARod's Kotlin code and the small energy interface must be self-contained.
+    shadowBundle 'org.jetbrains.kotlin:kotlin-stdlib:1.9.24'
+    shadowBundle 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.24'
+    shadowBundle 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.24'
+    shadowBundle 'org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.8.1'
+    shadowBundle('teamreborn:energy:3.0.0') { transitive = false }
+}
+
+processResources {
+    inputs.property 'version', project.version
+    filesMatching('META-INF/mods.toml') {
+        expand version: project.version
+    }
+}
+
+shadowJar {
+    configurations = [project.configurations.shadowBundle]
+    archiveClassifier = 'dev-shadow'
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    exclude 'fabric.mod.json'
+    exclude 'META-INF/*.SF', 'META-INF/*.RSA', 'META-INF/*.DSA', 'module-info.class'
+}
+
+remapJar {
+    input.set shadowJar.archiveFile
+    archiveFileName = "justarod-forge-${project.version}.jar"
+}

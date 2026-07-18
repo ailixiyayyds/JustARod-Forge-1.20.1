@@ -1,17 +1,35 @@
-# 只是根棍子
-> `JustARod` by @CSNeko
+# JustARod Forge 1.20.1 非官方降级分支
 
-> [!IMPORTANT]
-> 本仓库的 `1.20.1-backport` 分支是 [CSneko/JustARod](https://github.com/CSneko/JustARod) 的非官方 Minecraft 1.20.1 降级分支，并非上游项目的官方发行版。降级工作基于 0.2.2 的 Minecraft 1.21 源码，继续依照 GPL-3.0 开源。进度与兼容范围见 [BACKPORT.md](BACKPORT.md)。
+本仓库是 [CSneko/JustARod](https://github.com/CSneko/JustARod) 的非官方 Minecraft 1.20.1 Forge 降级分支，基于上游 `0.2.2` 源码继续开发，并非原作者发布的官方版本。
 
-这是[More_end_rod](https://github.com/CSneko/More_end_rod/)模组的续作，但是需要toNeko作为前置，你可以将其理解为toNeko的附属模组喵
+项目保留上游作者署名并继续使用 GPL-3.0 许可证开源。Forge 降级产生的问题请反馈到本仓库，不要打扰上游作者。
 
-你需要在 `Minecraft 1.21` 使用 `Fabric` 加载器运行，并且需要安装 [Fabric API](https://modrinth.com/mod/fabric-api) 和 [Fabric Language Kotlin](https://modrinth.com/mod/fabric-language-kotlin) 以及 [toNeko](https://modrinth.com/mod/tonekomod) 作为前置哦
+## 当前目标
 
-喜欢这个模组的话记得把star点上(｢・ω・)｢
+- Minecraft 1.20.1
+- Forge 47.4.21
+- Java 17
+- toNeko Forge 1.9.0 前置
+- GeckoLib Forge 4.4.9 前置
+- Forgified Fabric API 1.20.1 前置，用于承接尚未完全改写的 Fabric 回调
 
-可以来[爱发电](https://afdian.com/a/cccry)支持作者获取整合包哦
+源码采用 `common + forge` 双模块：common 保留已完成的 1.20.1 Yarn 源码降级，Forge 模块负责生产映射、原生 `@Mod` 入口、Mixin/Access Transformer 和发布打包。最终产物是 Forge JAR，不需要 Fabric Loader 或 Fabric Language Kotlin；Kotlin 运行库与 Energy API 已包含在模组内。
 
-# 如何使用
+## 构建
 
-# 已经替大家把猫猫草服了喵~
+先构建同级目录的 toNeko Fabric/Forge 1.20.1 工程，再执行：
+
+```powershell
+.\gradlew.bat :forge:build
+```
+
+发布文件：
+
+`forge/build/libs/justarod-forge-0.2.2+1.20.1-forge.0.jar`
+
+不要把 `-sources.jar` 或 `-dev-shadow.jar` 放进游戏。
+
+## 安装与测试
+
+安装文件和人工测试项目见 [TESTING_CHECKLIST_CN.md](TESTING_CHECKLIST_CN.md)。移植状态和技术说明见 [FORGE_BACKPORT.md](FORGE_BACKPORT.md)。
+

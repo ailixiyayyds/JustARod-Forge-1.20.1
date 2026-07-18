@@ -1,6 +1,9 @@
 /run/
 /libs/
 /build/
+**/build/
+**/.gradle/
+/local-maven/
 /.gradle/
 /.idea/
 .idea/
