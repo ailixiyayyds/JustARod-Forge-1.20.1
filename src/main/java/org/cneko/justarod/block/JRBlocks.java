@@ -27,12 +27,16 @@ public class JRBlocks {
     public static Block register(Block block, String name, boolean shouldRegisterItem) {
 
         Identifier id = Identifier.of(MODID, name);
+        // Forge creates the BlockItem registry delegate immediately. Register
+        // the backing block first so the delegate never resolves to the air
+        // placeholder while the common Fabric entrypoint is bootstrapping.
+        Block registeredBlock = Registry.register(Registries.BLOCK, id, block);
 
         if (shouldRegisterItem) {
-            BlockItem blockItem = new BlockItem(block, new Item.Settings());
+            BlockItem blockItem = new BlockItem(registeredBlock, new Item.Settings());
             Registry.register(Registries.ITEM, id, blockItem);
         }
 
-        return Registry.register(Registries.BLOCK, id, block);
+        return registeredBlock;
     }
 }
