@@ -11,23 +11,43 @@ import net.minecraft.world.World
 import org.cneko.justarod.item.rod.EndRodInstructions
 import org.cneko.justarod.item.rod.EndRodItem
 import org.cneko.justarod.item.rod.SelfUsedItemInterface
-import team.reborn.energy.api.base.SimpleEnergyItem
 
 /*
 电动的就不需要自己动手啦... 不那么费力的说
 但是振动的话就是越快越爽呢
  */
-abstract class ElectricRodItem(settings: Settings) : EndRodItem(settings),SimpleEnergyItem {
-    override fun getEnergyCapacity(stack: ItemStack?): Long {
-        return stack?.maxDamage?.toLong()!!
+abstract class ElectricRodItem(settings: Settings) : EndRodItem(settings) {
+    open fun getEnergyCapacity(stack: ItemStack?): Long {
+        return stack?.maxDamage?.toLong() ?: 0L
     }
 
-    override fun getEnergyMaxInput(stack: ItemStack?): Long {
+    open fun getEnergyMaxInput(stack: ItemStack?): Long {
         return 1000
     }
 
-    override fun getEnergyMaxOutput(stack: ItemStack?): Long {
+    open fun getEnergyMaxOutput(stack: ItemStack?): Long {
         return 1000
+    }
+
+    fun getStoredEnergy(stack: ItemStack): Long {
+        return stack.nbt?.getLong(ENERGY_KEY) ?: 0L
+    }
+
+    fun setStoredEnergy(stack: ItemStack, energy: Long) {
+        val safeEnergy = energy.coerceIn(0L, getEnergyCapacity(stack))
+        if (safeEnergy == 0L) {
+            stack.nbt?.remove(ENERGY_KEY)
+        } else {
+            stack.orCreateNbt.putLong(ENERGY_KEY, safeEnergy)
+        }
+    }
+
+    fun tryUseEnergy(stack: ItemStack, amount: Long): Boolean {
+        if (amount < 0L || stack.count != 1) return false
+        val remaining = getStoredEnergy(stack) - amount
+        if (remaining < 0L) return false
+        setStoredEnergy(stack, remaining)
+        return true
     }
 
     override fun appendTooltip(
@@ -78,8 +98,14 @@ abstract class ElectricRodItem(settings: Settings) : EndRodItem(settings),Simple
         selected: Boolean
     ) {
         // 设置耐久与能量同步
-        stack?.damage = stack?.maxDamage!! - this.getStoredEnergy(stack).toInt()
+        if (stack == null) return
+        val stored = getStoredEnergy(stack).coerceIn(0L, stack.maxDamage.toLong())
+        stack.damage = stack.maxDamage - stored.toInt()
         super.inventoryTick(stack, world, entity, slot, selected)
+    }
+
+    companion object {
+        private const val ENERGY_KEY = "energy"
     }
 }
 

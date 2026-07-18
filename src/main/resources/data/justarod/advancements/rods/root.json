@@ -1,0 +1,30 @@
+{
+  "display": {
+    "background": "justarod:textures/block/golden_leaves.png",
+    "announce_to_chat": false,
+    "show_toast": false,
+    "icon": {
+      "item": "minecraft:end_rod"
+    },
+    "title": {
+      "translate": "advancements.justarod.rods.root.title"
+    },
+    "description": {
+      "translate": "advancements.justarod.rods.root.description"
+    }
+  },
+  "criteria": {
+    "end_rod": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "minecraft:end_rod"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  }
+}

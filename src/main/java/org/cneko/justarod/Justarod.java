@@ -38,6 +38,7 @@ public class Justarod implements ModInitializer {
     public void onInitialize() {
         NetWorkingRodData.Companion.init();
         JRItems.Companion.init();
+        JREnchantments.init();
         JRBlocks.init();
         JREffects.Companion.init();
         JRAttributes.Companion.init();

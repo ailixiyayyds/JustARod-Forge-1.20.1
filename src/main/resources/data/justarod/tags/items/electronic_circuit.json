@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "techreborn:electronic_circuit",
+      "required": false
+    }
+  ]
+}
+

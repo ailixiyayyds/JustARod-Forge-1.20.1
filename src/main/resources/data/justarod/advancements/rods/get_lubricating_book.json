@@ -1,0 +1,31 @@
+{
+  "parent": "justarod:rods/root",
+  "display": {
+    "icon": {
+      "item": "justarod:lubricating_book"
+    },
+    "title": {
+      "translate": "advancements.justarod.rods.get_lubricating_book.title"
+    },
+    "description": {
+      "translate": "advancements.justarod.rods.get_lubricating_book.description"
+    }
+  },
+  "criteria": {
+    "get_lubricating_book": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "justarod:lubricating_book"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "rewards": {
+    "experience": 100
+  }
+}

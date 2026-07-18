@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "L": {
+      "item": "minecraft:light_blue_carpet"
+    },
+    "W": {
+      "item": "minecraft:white_carpet"
+    },
+    "S": {
+      "item": "minecraft:string"
+    }
+  },
+  "pattern": [
+    "SLS",
+    " W ",
+    "   "
+  ],
+  "result": {
+    "count": 1,
+    "item": "justarod:pantsu"
+  }
+}

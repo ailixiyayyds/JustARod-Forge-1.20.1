@@ -65,12 +65,18 @@ dependencies {
     forgeRuntimeLibrary files(ffapiForgeJar)
     forgeRuntimeLibrary files(geckoLibForgeJar)
 
-    // JustARod's Kotlin code and the small energy interface must be self-contained.
+    // JustARod's Kotlin code must be self-contained.
     shadowBundle 'org.jetbrains.kotlin:kotlin-stdlib:1.9.24'
     shadowBundle 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.24'
     shadowBundle 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.24'
     shadowBundle 'org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.8.1'
-    shadowBundle('teamreborn:energy:3.0.0') { transitive = false }
+
+    // Loom's development runs transform the common classes before shadowing,
+    // so Kotlin must also be present on the runServer/runClient classpath.
+    forgeRuntimeLibrary 'org.jetbrains.kotlin:kotlin-stdlib:1.9.24'
+    forgeRuntimeLibrary 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.24'
+    forgeRuntimeLibrary 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.24'
+    forgeRuntimeLibrary 'org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.8.1'
 }
 
 processResources {

@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key":{
+    "A":{
+      "item":"justarod:aids_vaccine"
+    },
+    "B":{
+      "item":"justarod:golden_leaves"
+    },
+    "C":{
+      "item":"minecraft:golden_apple"
+    },
+    "D":{
+      "item":"minecraft:pufferfish"
+    },
+    "E":{
+      "item":"minecraft:glass"
+    }
+  },
+  "pattern":[
+    "BAB",
+    "CDC",
+    "BEB"
+    ],
+    "result":{
+      "count":2,
+      "item":"justarod:aids_vaccine"
+    }
+}

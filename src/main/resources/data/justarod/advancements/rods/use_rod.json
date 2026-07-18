@@ -1,0 +1,27 @@
+{
+  "parent": "justarod:rods/root",
+  "display": {
+    "icon": {
+      "item": "justarod:redstone_rod"
+    },
+    "title": {
+      "translate": "advancements.justarod.rods.use_rod.title"
+    },
+    "description": {
+      "translate": "advancements.justarod.rods.use_rod.description"
+    }
+  },
+  "criteria": {
+    "end_rod": {
+      "trigger": "minecraft:effects_changed",
+      "conditions": {
+        "effects": {
+          "justarod:orgasm": {}
+        }
+      }
+    }
+  },
+  "rewards": {
+    "experience": 100
+  }
+}

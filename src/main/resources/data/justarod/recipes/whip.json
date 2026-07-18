@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "  S",
+    " S ",
+    "L  "
+  ],
+  "key": {
+    "S": {
+      "item": "minecraft:chain"
+    },
+    "L": {
+      "item": "minecraft:lightning_rod"
+    }
+  },
+  "result": {
+    "item": "justarod:whip",
+    "count": 1
+  }
+}

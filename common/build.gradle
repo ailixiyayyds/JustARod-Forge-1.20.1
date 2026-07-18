@@ -37,10 +37,6 @@ dependencies {
     modImplementation files(toNekoFabricJar)
     modImplementation "software.bernie.geckolib:geckolib-fabric-${rootProject.minecraft_version}:${rootProject.geckolib_version}"
     modCompileOnly('me.lucko:fabric-permissions-api:0.3.1') { transitive = false }
-    modApi('teamreborn:energy:3.0.0') {
-        exclude group: 'net.fabricmc.fabric-api'
-    }
-
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.24'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.8.1'
     compileOnly 'org.projectlombok:lombok:1.18.30'

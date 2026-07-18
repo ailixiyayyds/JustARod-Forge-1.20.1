@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "S": {
+      "item": "minecraft:sugar"
+    },
+    "G": {
+      "item": "minecraft:glowstone_dust"
+    },
+    "W": {
+      "item": "minecraft:fire_charge"
+    },
+    "I": {
+      "item": "minecraft:ink_sac"
+    }
+  },
+  "pattern": [
+    "RWR",
+    "GSG",
+    " I "
+  ],
+  "result": {
+    "count": 1,
+    "item": "justarod:tamsulosin_capsule"
+  }
+}

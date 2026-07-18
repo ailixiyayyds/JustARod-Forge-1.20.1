@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "techreborn:industrial_circuit",
+      "required": false
+    }
+  ]
+}
+
