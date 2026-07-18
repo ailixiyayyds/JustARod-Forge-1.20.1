@@ -1,5 +1,9 @@
 {
-  "variants": {
-    "": { "model": "justarod:block/golden_leaves" }
-  }
+  "multipart": [
+    {
+      "apply": {
+        "model": "justarod:block/golden_leaves"
+      }
+    }
+  ]
 }
