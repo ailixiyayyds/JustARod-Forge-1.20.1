@@ -24,6 +24,15 @@ import java.util.logging.Logger;
 
 public class Justarod implements ModInitializer {
     public static final String MODID = "justarod";
+    private static boolean forgeRuntime;
+
+    public static void markForgeRuntime() {
+        forgeRuntime = true;
+    }
+
+    public static boolean isForgeRuntime() {
+        return forgeRuntime;
+    }
 
     @Override
     public void onInitialize() {

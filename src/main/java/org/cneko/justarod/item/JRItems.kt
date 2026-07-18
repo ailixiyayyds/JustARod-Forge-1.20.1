@@ -8,6 +8,7 @@ import net.minecraft.entity.effect.StatusEffects
 import net.minecraft.item.ArmorItem
 import net.minecraft.item.BoneMealItem
 import net.minecraft.item.Item
+import net.minecraft.item.ItemConvertible
 import net.minecraft.item.ItemGroup
 import net.minecraft.item.ItemStack
 import net.minecraft.item.FoodComponent
@@ -17,6 +18,7 @@ import net.minecraft.registry.RegistryKey
 import net.minecraft.text.Text
 import net.minecraft.util.Identifier
 import org.cneko.justarod.Justarod.MODID
+import org.cneko.justarod.Justarod
 
 import org.cneko.justarod.block.JRBlocks.*
 import org.cneko.justarod.effect.JREffects
@@ -120,6 +122,27 @@ class JRItems {
 
         var JR_ITEM_GROUP_KEY: RegistryKey<ItemGroup>? = null
         var JR_ITEM_GROUP: ItemGroup? = null
+
+        fun isOwnCreativeTab(key: Any?): Boolean = key == JR_ITEM_GROUP_KEY
+
+        fun creativeTabEntries(): List<ItemConvertible> = listOf(
+            SLIME_ROD, GIANT_ROD, LUBRICATING_BOOK, REDSTONE_ROD, CACTUS_ROD,
+            EATABLE_ROD, LONG_ROD, LONGER_ROD, LIGHTNING_END_ROD, NETWORKING_ROD,
+            GOLDEN_LEAVES, BASIC_ELECTRIC_ROD, ADVANCED_ELECTRIC_ROD, INDUSTRIAL_ROD,
+            FirecrackerRodItem, BREMELANOTIDE, GROWTH_AGENT, REVERSE_GROWTH_AGENT,
+            ROD_AGENT, INSERTION_PEDESTAL, RETRIEVER, SHENBAO, FIREWORKS_ROD,
+            TRIBOCHARGING_ROD, XP_GUN, REMOTE_CONTROL, ICED_TEA, FREE_MATING,
+            SANITARY_TOWEL, STERILIZATION_PILLS, BYT, MOLE, HPV_VACCINE, COTTON_SWAB,
+            SCALPEL, UTERUS, BRITH_CONTROLLING_PILL, ABORtiON_PILL, ESTROGEN,
+            TESTOSTERONE, ANTI_ANDROGEN, AROMATASE, PENICILLIN, BALL_MOUTH,
+            ELECTRIC_SHOCK_DEVICE, ELECTRIC_SHOCK_CONTROLLER, WHIP, CONTRACT_WHIP,
+            BINDING_ROPE, EYE_PATCH, EARPLUG, HANDCUFFES, SHACKLES, HANDCUFFES_RING,
+            HANDCUFFES_CHAIN, NO_MATING_PLZ, EXCREMENT, FEMALE_POTION, MALE_POTION,
+            SPERM_RETRIEVAL_DEVICE, FROZEN_SPERM_RETRIEVAL_DEVICE, CLONER_DEVICE,
+            PANTSU, PANTSU_GETTER, DIAPER, AIDS_VACCINE, TAMSULOSIN_CAPSULE,
+            PARTHENOGENESIS_CATALYST, YURI_MATING_MATING_MATING
+        )
+
         fun init(){
             // 注册物品
             Registry.register(Registries.ITEM, Identifier.of(MODID, "slime_rod"), SLIME_ROD)
@@ -198,76 +221,10 @@ class JRItems {
                 .build()
             Registry.register(Registries.ITEM_GROUP, JR_ITEM_GROUP_KEY, JR_ITEM_GROUP)
 
-            ItemGroupEvents.modifyEntriesEvent(JR_ITEM_GROUP_KEY!!).register { entries ->
-                entries.add(SLIME_ROD)
-                entries.add(GIANT_ROD)
-                entries.add(LUBRICATING_BOOK)
-                entries.add(REDSTONE_ROD)
-                entries.add(CACTUS_ROD)
-                entries.add(EATABLE_ROD)
-                entries.add(LONG_ROD)
-                entries.add(LONGER_ROD)
-                entries.add(LIGHTNING_END_ROD)
-                entries.add(NETWORKING_ROD)
-                entries.add(GOLDEN_LEAVES)
-                entries.add(BASIC_ELECTRIC_ROD)
-                entries.add(ADVANCED_ELECTRIC_ROD)
-                entries.add(INDUSTRIAL_ROD)
-                entries.add(FirecrackerRodItem)
-                entries.add(BREMELANOTIDE)
-                entries.add(GROWTH_AGENT)
-                entries.add(REVERSE_GROWTH_AGENT)
-                entries.add(ROD_AGENT)
-                entries.add(INSERTION_PEDESTAL)
-                entries.add(RETRIEVER)
-                entries.add(SHENBAO)
-                entries.add(FIREWORKS_ROD)
-                entries.add(TRIBOCHARGING_ROD)
-                entries.add(XP_GUN)
-                entries.add(REMOTE_CONTROL)
-                entries.add(ICED_TEA)
-                entries.add(FREE_MATING)
-                entries.add(SANITARY_TOWEL)
-                entries.add(STERILIZATION_PILLS)
-                entries.add(BYT)
-                entries.add(MOLE)
-                entries.add(HPV_VACCINE)
-                entries.add(COTTON_SWAB)
-                entries.add(SCALPEL)
-                entries.add(UTERUS)
-                entries.add(BRITH_CONTROLLING_PILL)
-                entries.add(ABORtiON_PILL)
-                entries.add(ESTROGEN)
-                entries.add(TESTOSTERONE)
-                entries.add(ANTI_ANDROGEN)
-                entries.add(AROMATASE)
-                entries.add(PENICILLIN)
-                entries.add(BALL_MOUTH)
-                entries.add(ELECTRIC_SHOCK_DEVICE)
-                entries.add(ELECTRIC_SHOCK_CONTROLLER)
-                entries.add(WHIP)
-                entries.add(CONTRACT_WHIP)
-                entries.add(BINDING_ROPE)
-                entries.add(EYE_PATCH)
-                entries.add(EARPLUG)
-                entries.add(HANDCUFFES)
-                entries.add(SHACKLES)
-                entries.add(HANDCUFFES_RING)
-                entries.add(HANDCUFFES_CHAIN)
-                entries.add(NO_MATING_PLZ)
-                entries.add(EXCREMENT)
-                entries.add(FEMALE_POTION)
-                entries.add(MALE_POTION)
-                entries.add(SPERM_RETRIEVAL_DEVICE)
-                entries.add(FROZEN_SPERM_RETRIEVAL_DEVICE)
-                entries.add(CLONER_DEVICE)
-                entries.add(PANTSU)
-                entries.add(PANTSU_GETTER)
-                entries.add(DIAPER)
-                entries.add(AIDS_VACCINE)
-                entries.add(TAMSULOSIN_CAPSULE)
-                entries.add(PARTHENOGENESIS_CATALYST)
-                entries.add(YURI_MATING_MATING_MATING)
+            if (!Justarod.isForgeRuntime()) {
+                ItemGroupEvents.modifyEntriesEvent(JR_ITEM_GROUP_KEY!!).register { entries ->
+                    creativeTabEntries().forEach { entries.add(it) }
+                }
             }
         }
     }
