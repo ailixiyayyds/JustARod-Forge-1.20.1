@@ -8,6 +8,7 @@
 2. `justarod-forge-0.2.2+1.20.1-forge.0.jar`
 3. `fabric-api-0.92.6+1.11.14+1.20.1.jar`（Forgified Fabric API，不是普通 Fabric API）
 4. `geckolib-forge-1.20.1-4.4.9.jar`
+5. `architectury-forge-9.2.14.jar`
 
 环境要求：Minecraft 1.20.1、Forge 47.4.21、Java 17。
 
@@ -17,7 +18,7 @@
 - 所有 JustARod Fabric JAR
 - 同一模组的旧版或重复 JAR
 
-本组合自身不需要 Fabric Language Kotlin 或 Sinytra Connector。如果整合包里的其他 Fabric 模组仍依赖 Connector，可以保留；但排查 toNeko/JustARod 问题时，应先建立只含上面四个正式 JAR 的最小测试环境。
+本组合自身不需要 Fabric Language Kotlin 或 Sinytra Connector。如果整合包里的其他 Fabric 模组仍依赖 Connector，可以保留；但排查 toNeko/JustARod 问题时，应先建立只含上面五个正式 JAR 的最小测试环境。
 
 不要安装 `-sources.jar` 或 `-dev-shadow.jar`。
 
